@@ -1,0 +1,26 @@
+stages:
+  download:
+    cmd: src/download.py -o data/downloadedpython src/download.py
+    params:
+    - download.n_locs
+    - download.year-d
+  prepare:
+    cmd: python src/prepare.py data/downloaded
+    deps:
+    - data/downloaded
+    - src/prepare.py
+    outs:
+    - data/prepared
+  process:
+    cmd: python src/process.py data/downloaded
+    deps:
+    - data/downloaded
+    - src/process.py
+    outs:
+    - data/processed
+  evaluate:
+    cmd: python src/evaluate.py data/prepared data/processed
+    deps:
+    - data/prepared
+    - data/processed
+    - src/evaluate.py

@@ -12,6 +12,28 @@ import requests
 
 from pathlib import Path
 
+def download_2023(n_locs,output):
+    # Just to speed it up specifically for the case of year=2023
+    url = "www.ncei.noaa.gov/data/local-climatological-data/access/2023/"
+    # arr contains only those files that are less than 1MB in size
+    arr = ["99999994290.csv","99999953186.csv","99999923272.csv","99999923271.csv","99999913782.csv",\
+           "99999913724.csv","99999904134.csv","99999900447.csv","99844199999.csv","99820599999.csv",\
+            "99800399999.csv","99734499999.csv","99421099999.csv","99090099999.csv","99020099999.csv",\
+                "98747099999.csv","98644099999.csv","98630099999.csv","98550099999.csv"]
+    num_csvs=0
+    
+    for file in arr:
+        # print(size)
+        saved = download_and_save_csv(url+file,"MonthlyDepartureFromNormalAverageTemperature",output)
+        if(saved):
+            num_csvs+=1
+        if(num_csvs>n_locs):
+            break
+    if(num_csvs!=n_locs):
+        return False
+    else:
+        return True
+
 def get_file_size(url):
     response = requests.head(url)  # Only get headers, not content
     file_size = int(response.headers.get('content-length', -1))  # Get file size from headers
@@ -101,8 +123,13 @@ def main():
     n_locs = params["n_locs"]
 
     output = "/Users/nikhilanand/CS5830_DVC/data"
-
-    download_csvs(n_locs,year,output)
+    if(year==2023):
+        saved = download_2023(n_locs,output)
+    else:
+        download_csvs(n_locs,year,output)
+    
+    if not saved:
+        download_csvs(n_locs,year,output)
 
 if __name__ == "__main__":
     main()
