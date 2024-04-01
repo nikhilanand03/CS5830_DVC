@@ -30,7 +30,14 @@ def main():
     gt_arr,gt_ends = parse_file(gt_path)
     comp_arr,_ = parse_file(computed_path)
     
-    comp_arr = comp_arr[:gt_ends[0]] + comp_arr[12:12+gt_ends[1]]
+    if(len(gt_ends)==2):
+        comp_arr = comp_arr[:gt_ends[0]] + comp_arr[12:12+gt_ends[1]]
+    elif(len(gt_ends)==1):
+        comp_arr = comp_arr[:gt_ends[0]]
+    else:
+        comp_arr = []
+        for i in range(len(gt_ends)):
+            comp_arr = comp_arr+comp_arr[12*i:12*i+gt_ends[i]]
 
     # print(gt_arr,comp_arr)
 

@@ -4,16 +4,16 @@ stages:
     cmd: python src/download.py
     params:
       params.yaml:
-        download.n_locs: 2
+        download.n_locs: 1
         download.year: 2023
   prepare:
     cmd: python src/prepare.py data/downloaded
     deps:
     - path: data/downloaded
       hash: md5
-      md5: 26dd7f889818cb5ed399790b9a29f01c.dir
-      size: 411499
-      nfiles: 2
+      md5: 8093cd482edb9091fd21ff8c238bc5c7.dir
+      size: 174813
+      nfiles: 1
     - path: src/prepare.py
       hash: md5
       md5: 7d25c4f457fdefd5be132dab2226ab4e
@@ -21,17 +21,17 @@ stages:
     outs:
     - path: data/prepared
       hash: md5
-      md5: 54e30a76bf2e59d2cef61730b6c6772a.dir
-      size: 246
+      md5: b79615d513d0c2ef8659363f1c153d22.dir
+      size: 118
       nfiles: 1
   process:
     cmd: python src/process.py data/downloaded
     deps:
     - path: data/downloaded
       hash: md5
-      md5: 26dd7f889818cb5ed399790b9a29f01c.dir
-      size: 411499
-      nfiles: 2
+      md5: 8093cd482edb9091fd21ff8c238bc5c7.dir
+      size: 174813
+      nfiles: 1
     - path: src/process.py
       hash: md5
       md5: 3401b81de20b95751c2a44ecfd128b8a
@@ -39,29 +39,29 @@ stages:
     outs:
     - path: data/processed
       hash: md5
-      md5: fd902dc431f2a37818870b29077bcc56.dir
-      size: 585
+      md5: 923a4e582fac87e2ccebfcdd72c2925f.dir
+      size: 286
       nfiles: 1
   evaluate:
     cmd: python src/evaluate.py data/prepared/ground_truth.txt data/processed/computed_monthly_averages.txt
     deps:
     - path: data/prepared
       hash: md5
-      md5: 54e30a76bf2e59d2cef61730b6c6772a.dir
-      size: 246
+      md5: b79615d513d0c2ef8659363f1c153d22.dir
+      size: 118
       nfiles: 1
     - path: data/processed
       hash: md5
-      md5: fd902dc431f2a37818870b29077bcc56.dir
-      size: 585
+      md5: 923a4e582fac87e2ccebfcdd72c2925f.dir
+      size: 286
       nfiles: 1
     - path: src/evaluate.py
       hash: md5
-      md5: daefcd526405dbc9a691202cfc3e9820
-      size: 1662
+      md5: 54a876f226d4549a4602955fa73ecd4a
+      size: 1892
     outs:
     - path: data/evaluated
       hash: md5
-      md5: 71e1bec9ea1e118aac531c034822189a.dir
-      size: 75
+      md5: 2805eb6f7799965da23f0fc419b7dd49.dir
+      size: 74
       nfiles: 1
