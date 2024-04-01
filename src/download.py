@@ -12,14 +12,12 @@ import requests
 
 from pathlib import Path
 
-def download_2023(n_locs,output):
+def download_2023_2(output):
+    n_locs=2
     # Just to speed it up specifically for the case of year=2023
     url = "www.ncei.noaa.gov/data/local-climatological-data/access/2023/"
     # arr contains only those files that are less than 1MB in size
-    arr = ["99999994290.csv","99999953186.csv","99999923272.csv","99999923271.csv","99999913782.csv",\
-           "99999913724.csv","99999904134.csv","99999900447.csv","99844199999.csv","99820599999.csv",\
-            "99800399999.csv","99734499999.csv","99421099999.csv","99090099999.csv","99020099999.csv",\
-                "98747099999.csv","98644099999.csv","98630099999.csv","98550099999.csv"]
+    arr = ["99999994290.csv","99999913724.csv"]
     num_csvs=0
     
     for file in arr:
@@ -122,9 +120,12 @@ def main():
     year = params["year"]
     n_locs = params["n_locs"]
 
-    output = "/Users/nikhilanand/CS5830_DVC/data"
-    if(year==2023):
-        saved = download_2023(n_locs,output)
+    output = "/Users/nikhilanand/CS5830_DVC/data/downloaded"
+    if not os.path.exists(output):
+        os.makedirs(output)
+
+    if(year==2023 and n_locs==2):
+        saved = download_2023_2(output)
     else:
         download_csvs(n_locs,year,output)
     

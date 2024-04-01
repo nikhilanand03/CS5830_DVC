@@ -1,0 +1,67 @@
+schema: '2.0'
+stages:
+  download:
+    cmd: python src/download.py
+    params:
+      params.yaml:
+        download.n_locs: 2
+        download.year: 2023
+  prepare:
+    cmd: python src/prepare.py data/downloaded
+    deps:
+    - path: data/downloaded
+      hash: md5
+      md5: 26dd7f889818cb5ed399790b9a29f01c.dir
+      size: 411499
+      nfiles: 2
+    - path: src/prepare.py
+      hash: md5
+      md5: 7d25c4f457fdefd5be132dab2226ab4e
+      size: 1770
+    outs:
+    - path: data/prepared
+      hash: md5
+      md5: 54e30a76bf2e59d2cef61730b6c6772a.dir
+      size: 246
+      nfiles: 1
+  process:
+    cmd: python src/process.py data/downloaded
+    deps:
+    - path: data/downloaded
+      hash: md5
+      md5: 26dd7f889818cb5ed399790b9a29f01c.dir
+      size: 411499
+      nfiles: 2
+    - path: src/process.py
+      hash: md5
+      md5: 3401b81de20b95751c2a44ecfd128b8a
+      size: 1568
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: fd902dc431f2a37818870b29077bcc56.dir
+      size: 585
+      nfiles: 1
+  evaluate:
+    cmd: python src/evaluate.py data/prepared/ground_truth.txt data/processed/computed_monthly_averages.txt
+    deps:
+    - path: data/prepared
+      hash: md5
+      md5: 54e30a76bf2e59d2cef61730b6c6772a.dir
+      size: 246
+      nfiles: 1
+    - path: data/processed
+      hash: md5
+      md5: fd902dc431f2a37818870b29077bcc56.dir
+      size: 585
+      nfiles: 1
+    - path: src/evaluate.py
+      hash: md5
+      md5: daefcd526405dbc9a691202cfc3e9820
+      size: 1662
+    outs:
+    - path: data/evaluated
+      hash: md5
+      md5: 71e1bec9ea1e118aac531c034822189a.dir
+      size: 75
+      nfiles: 1

@@ -1,9 +1,9 @@
 stages:
   download:
-    cmd: src/download.py -o data/downloadedpython src/download.py
+    cmd: python src/download.py
     params:
     - download.n_locs
-    - download.year-d
+    - download.year
   prepare:
     cmd: python src/prepare.py data/downloaded
     deps:
@@ -19,8 +19,10 @@ stages:
     outs:
     - data/processed
   evaluate:
-    cmd: python src/evaluate.py data/prepared data/processed
+    cmd: python src/evaluate.py data/prepared/ground_truth.txt data/processed/computed_monthly_averages.txt
     deps:
     - data/prepared
     - data/processed
     - src/evaluate.py
+    outs:
+    - data/evaluated

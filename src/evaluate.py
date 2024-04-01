@@ -36,12 +36,20 @@ def main():
 
     r2 = r2_score(gt_arr,comp_arr)
 
-    print("Measure of Consistence, R2 Score is: ",r2)
+    if not os.path.exists("/Users/nikhilanand/CS5830_DVC/data/evaluated"):
+        os.makedirs("/Users/nikhilanand/CS5830_DVC/data/evaluated")
 
-    if(r2>0.9):
-        print("Consistent data")
-    else:
-        print("Inconsistent data")
+    with open("/Users/nikhilanand/CS5830_DVC/data/evaluated/evaluation.txt",'w') as file:
+        pass
+    
+    with open("/Users/nikhilanand/CS5830_DVC/data/evaluated/evaluation.txt",'a') as file:
+        file.write("Measure of Consistence, R2 Score is: "+str(r2)+"\n")
+    
+    with open("/Users/nikhilanand/CS5830_DVC/data/evaluated/evaluation.txt",'a') as file:
+        if(r2>0.9):
+            file.write("Consistent data")
+        else:
+            file.write("Inconsistent data")
 
 if __name__=="__main__":
     main()
