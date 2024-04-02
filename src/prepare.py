@@ -8,6 +8,17 @@ import pandas as pd
 import yaml
 
 def process_csv(input_path, output_file, column_name):
+    """
+    Process a CSV file, extract rows where the specified column is not NaN,
+    and save the month-wise data to an output file.
+
+    Args:
+        input_path (str): Path to the input CSV file.
+        output_file (str): Path to the output file where processed data will be saved.
+        column_name (str): Name of the column to filter non-NaN values.
+
+    """
+
     df = pd.read_csv(input_path)
     
     # Extract rows where the specified column is not NaN
@@ -36,6 +47,7 @@ def process_csv(input_path, output_file, column_name):
 def main():
     # params = yaml.safe_load(open("params.yaml"))["prepare"]
 
+    # Check if the number of command-line arguments is correct
     if len(sys.argv) != 2:
         sys.stderr.write("Arguments error. Usage:\n")
         sys.stderr.write("\tpython prepare.py data-file\n")
@@ -43,8 +55,10 @@ def main():
 
     input = sys.argv[1] # Pass the data directory path here
 
+    # Get a list of files in the specified directory
     files = os.listdir(input)
     
+    # Iterate over each file in the directory
     for file in files:
         if file.endswith('.csv'):
             file_path = os.path.join(input, file)

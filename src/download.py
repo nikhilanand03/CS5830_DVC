@@ -13,6 +13,16 @@ import requests
 from pathlib import Path
 
 def download_2023(n_locs,output):
+    """
+    Download CSV files specifically for the year 2023.
+
+    Args:
+        n_locs (int): Number of CSV files to download.
+        output (str): Output folder path to save downloaded files.
+    
+    Returns:
+        bool: True if download is successful, False otherwise.
+    """
     print("2023",n_locs)
     # Just to speed it up specifically for the case of year=2023
     url = "www.ncei.noaa.gov/data/local-climatological-data/access/2023/"
@@ -26,6 +36,15 @@ def download_2023(n_locs,output):
     return True
 
 def get_file_size(url):
+    """
+    Get the size of a file from a given URL.
+
+    Args:
+        url (str): URL of the file.
+
+    Returns:
+        int: Size of the file in bytes, or -1 if size retrieval fails.
+    """
     response = requests.head(url)  # Only get headers, not content
     file_size = int(response.headers.get('content-length', -1))  # Get file size from headers
 
@@ -35,6 +54,18 @@ def get_file_size(url):
         return file_size
 
 def download_and_save_csv(url, column_to_check, output_folder):
+    """
+    Download a CSV file from a given URL, check a specific column for NaNs, and if not fully NaN, save it to an output folder.
+
+    Args:
+        url (str): URL of the CSV file.
+        column_to_check (str): Name of the column to check for NaN values.
+        output_folder (str): Folder path to save the downloaded CSV file.
+
+    Returns:
+        bool: True if the CSV is saved successfully, False otherwise.
+    """
+
     print("Downloading ",url,"Checking ",column_to_check,"Outputting to ",output_folder)
     filename = wget.download("https://"+url)
     print("wget done")
@@ -58,11 +89,12 @@ def download_csvs(n_locs,year,output):
     Args:
         n_locs (int): Number of csvs to be downloaded
         year (int): Year of the data that must be downloaded
+        output (str): Output folder path to save downloaded files.
     """
 
     url = "www.ncei.noaa.gov/data/local-climatological-data/access/"+str(year)+"/"
 
-    path = Path('/Users/nikhilanand/CS5830_DVC/data/list.txt')
+    path = Path('/Users/nikhilanand/CS5830_DVC/data/list.txt') # list.txt contains all csv filenames from the given year
     if(path.is_file()):
         print("list.txt already exists")
     else:
@@ -87,11 +119,9 @@ def download_csvs(n_locs,year,output):
     
     num_csvs=0
 
+    # Now it goes over each filename url and if it's smaller than 1MB, it checks that the columns aren't NaN and saves it in that case
     for file in list_of_files:
-        # print(".")
-        # print("https://"+url+file[:-1])
         size=get_file_size("https://"+url+file[:-1])
-        # print(size)
         if(size<1000000): # Size < 1MB
             saved = download_and_save_csv(url+file,"MonthlyDepartureFromNormalAverageTemperature",output)
             if(saved):
@@ -102,28 +132,34 @@ def download_csvs(n_locs,year,output):
             print(file[:-1],": Too big.")
     
 def main():
+    # Load parameters from the YAML configuration file
     params = yaml.safe_load(open("params.yaml"))["download"]
 
+    # Check if any command line arguments are provided
     if len(sys.argv) != 1:
         print(sys.argv)
         sys.stderr.write("Arguments error. Usage:\n")
         sys.stderr.write("\tpython src/download.py\n")
         sys.exit(1)
 
+    # Extract parameters from the configuration
     year = params["year"]
     n_locs = params["n_locs"]
 
+    # Set the output folder path where downloaded files will be saved
     output = "/Users/nikhilanand/CS5830_DVC/data/downloaded"
     if not os.path.exists(output):
         os.makedirs(output)
 
     print(n_locs)
 
+    # Check if the requested year is 2023 and the number of locations is either 1 or 2
     if(year==2023 and (n_locs==2 or n_locs==1)):
         saved = download_2023(n_locs,output)
     else:
         download_csvs(n_locs,year,output)
-    
+        
+    # If files were not saved during the initial 2023-specific download, attempt regular download
     if not saved:
         download_csvs(n_locs,year,output)
 
